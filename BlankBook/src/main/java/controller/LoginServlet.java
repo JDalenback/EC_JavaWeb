@@ -72,8 +72,6 @@ public class LoginServlet extends HttpServlet {
 		if (dbConnection.connectToSQLDatabase("BlankBook")) {
 			if (dbConnection.validateUserLogin(userBean, password)) {
 				httpSession.setAttribute("user", userBean);
-				
-				
 				RequestDispatcher requestDispatcher = request.getRequestDispatcher("/RetrieveUserPosts");
 				requestDispatcher.forward(request, response);
 			} else {

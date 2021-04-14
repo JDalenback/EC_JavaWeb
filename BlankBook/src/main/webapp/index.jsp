@@ -34,6 +34,14 @@
     <link href="signin.css" rel="stylesheet">
   </head>
   <body class="text-center">
+  
+  <%
+  	if(session.getAttribute("user") != null){
+  		%>
+  		<jsp:forward page="main.jsp" />
+  		<%
+  	}
+  %>
     
 <main class="form-signin">
   <form action="<%=request.getContextPath()%>/Login" method="POST">
