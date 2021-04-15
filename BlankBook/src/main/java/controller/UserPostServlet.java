@@ -32,6 +32,11 @@ public class UserPostServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		/*
+		 * If user manually tries to access the UserPostServlet:
+		 * Check if there is a valid session, if so redirect to main.jsp.
+		 * Otherwise send back to index via LogoutServlet/Logout.
+		 */
 		if (request.getSession().getAttribute("user") != null) {
 			response.sendRedirect("main.jsp");
 		} else {
@@ -46,8 +51,14 @@ public class UserPostServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// Connect to DB.
-		// If connection is good, post query to db.
+		/*
+		 * Connect to DB.
+		 * If Connection is not good redirect to dbError page.
+		 * If connection is good, try to post query to db.
+		 * If the query was not successful redirect to pstError page.
+		 * If it was successful forward to /RetrieveUserPosts. 
+		 */
+
 		DBConnection dbConnection = new DBConnection();
 		if (dbConnection.connectToSQLDatabase("BlankBook")) {
 			String userName = request.getParameter("UserName");

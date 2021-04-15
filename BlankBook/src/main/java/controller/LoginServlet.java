@@ -34,6 +34,12 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		/*
+		 * If user manually tries to access the LoginServlet:
+		 * Check if there is a valid session, if so redirect to main.jsp.
+		 * Otherwise send back to index via LogoutServlet/Logout.
+		 */
 		if(request.getSession().getAttribute("user") != null) {
 			response.sendRedirect("main.jsp");
 		} else {
@@ -64,11 +70,13 @@ public class LoginServlet extends HttpServlet {
 			response.sendRedirect("main.jsp");
 		}
 		
-		// Make Connection to DB.
-		// If connection is not good send to dbError page.
-		// If connection is good check if username and password mathches user in db.
-		// If it does send to main.jsp
-		// Else send back to index via LogoutServlet/Logout.
+		/*
+		* Make Connection to DB.
+		* If connection is not good send to dbError page.
+		* If connection is good check if username and password mathches user in db.
+		* If it does send to main.jsp
+		* Else send back to index via LogoutServlet/Logout.
+		 */
 		if (dbConnection.connectToSQLDatabase("BlankBook")) {
 			if (dbConnection.validateUserLogin(userBean, password)) {
 				httpSession.setAttribute("user", userBean);

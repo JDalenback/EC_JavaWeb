@@ -1,5 +1,9 @@
 package devConfig;
 
+/*
+ * This is a class to  "hide" the database login.
+ * Should not be included in any distribution.
+ */
 public class dbLogin {
 	
 	private static final String username = "root";

@@ -14,6 +14,9 @@ import java.util.List;
 import beans.UserBean;
 import devConfig.dbLogin;
 
+/*
+ * Class that handles connection and all querys to the mysql database.
+ */
 public class DBConnection {
 
 	private Connection connection = null;
@@ -41,13 +44,20 @@ public class DBConnection {
 		}
 	}
 
+	/*
+	 * Any query that is not an insert goes through here.
+	 * Takes the query and all values that should be inserted into the query as parameters.
+	 */
 	private List<String> querySQLDatabase(String query, String... queryParameters) {
 		ArrayList<String> queryResult = new ArrayList<>();
 		try {
 			prepareSQLstatement(query, queryParameters);
 
 			resultSet = preparedStatement.executeQuery();
-
+			
+			/*
+			 * Loop through all columns of the query result and add them to the queryResult list.
+			 */
 			ResultSetMetaData rsmd = resultSet.getMetaData();
 			int columnsNumber = rsmd.getColumnCount();
 			while (resultSet.next()) {
@@ -67,6 +77,9 @@ public class DBConnection {
 		return queryResult;
 	}
 	
+	/*
+	 * All insert querys goes through here.
+	 */
 	private boolean querySQLDatabaseInsert(String query, String... queryParameters) {
 		boolean isSuccessfullInsert = false;
 		try {
@@ -86,10 +99,14 @@ public class DBConnection {
 		return isSuccessfullInsert;
 	}
 	
+	/*
+	 * Helper method to insert values into prepared statement.
+	 */
 	private void prepareSQLstatement(String query, String[] queryParameters) {
 		try {
 			preparedStatement = connection.prepareStatement(query);
-
+			
+			// Insert values into the query if there are any.
 			int numberOfQueryParams = queryParameters.length;
 			if (numberOfQueryParams > 0) {
 				for (int i = 0; i < numberOfQueryParams; i++) {
@@ -103,10 +120,15 @@ public class DBConnection {
 		}
 	}
 
+	/*
+	 * Query for user validation on login.
+	 */
 	public boolean validateUserLogin(UserBean userBean, String password) {
 		String query = "SELECT Email, FullName FROM Users WHERE Username = ? AND Password = ?";
 		List<String> queryResult = querySQLDatabase(query, userBean.getUserName(), password);
 
+		// Check if we got the right amount of values from the database.
+		// If we did then set them to the UserBean.
 		if (queryResult.size() == 2) {
 			userBean.setEmail(queryResult.get(0));
 			userBean.setFullName(queryResult.get(1));
@@ -115,6 +137,9 @@ public class DBConnection {
 		return false;
 	}
 	
+	/*
+	 * Query for retrieving all posts from db.
+	 */
 	public List<String> retrieveUserPostsFromSQLDatabase() {
 		String query = "SELECT UserName, PostDate, PostValue, Tag from UserPost";
 		List<String> queryResult = querySQLDatabase(query);
@@ -122,6 +147,9 @@ public class DBConnection {
 		return queryResult;
 	}
 	
+	/*
+	 * Query for retrieving the last post from the db.
+	 */
 	public List<String> retrieveLastUserPostsFromSQLDatabase() {
 		String query = "SELECT UserName, PostDate, PostValue, Tag from UserPost WHERE TagId = ( SELECT MAX(TagId) FROM UserPost);";
 		List<String> queryResult = querySQLDatabase(query);
@@ -130,7 +158,9 @@ public class DBConnection {
 	}
 	
 	
-
+	/*
+	 * Query for inserting post into db.
+	 */
 	public boolean insertIntoDb(String userName, String insertValue, String tag) {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		LocalDateTime now = LocalDateTime.now();
