@@ -56,9 +56,8 @@ public class UserPostServlet extends HttpServlet {
 		 * If Connection is not good redirect to dbError page.
 		 * If connection is good, try to post query to db.
 		 * If the query was not successful redirect to pstError page.
-		 * If it was successful forward to /RetrieveUserPosts. 
+		 * If it was successful set filter attribute and forward to /RetrieveUserPosts. 
 		 */
-
 		DBConnection dbConnection = new DBConnection();
 		if (dbConnection.connectToSQLDatabase("BlankBook")) {
 			String userName = request.getParameter("UserName");
